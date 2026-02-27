@@ -1,0 +1,41 @@
+{
+  "name": "shift-sync-api",
+  "version": "1.0.0",
+  "description": "**ShiftSync** is a professional-grade backend API designed for hospitality workers to track, manage, and analyze fluctuating income. Built with a focus on data integrity and type safety.",
+  "main": "index.js",
+  "scripts": {
+    "build": "npx tsc",
+    "dev": "nodemon --watch src --exec ts-node src/index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/luro-dev/shift-sync-api.git"
+  },
+  "keywords": [],
+  "author": "Luis Rodriguez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/luro-dev/shift-sync-api/issues"
+  },
+  "homepage": "https://github.com/luro-dev/shift-sync-api#readme",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "express-session": "^1.19.0",
+    "morgan": "^1.10.1",
+    "pg": "^8.19.0"
+  },
+  "devDependencies": {
+    "@tsconfig/node22": "^22.0.5",
+    "@types/bcrypt": "^6.0.0",
+    "@types/express": "^5.0.6",
+    "@types/express-session": "^1.18.2",
+    "@types/morgan": "^1.9.10",
+    "@types/node": "^25.3.2",
+    "@types/pg": "^8.16.0",
+    "nodemon": "^3.1.14",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}
