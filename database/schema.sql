@@ -1,0 +1,18 @@
+CREATE TABLE IF NOT EXISTS users (
+  id SERIAL PRIMARY KEY,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  password_hash TEXT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS shifts (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+  shift_date DATE NOT NULL,
+  shift_type VARCHAR(20),
+  hourly_pay NUMERIC(10, 2) NOT NULL,
+  hours_wored NUMERIC(4, 2) NOT NULL,
+  credit_tips NUMERIC(10, 2) DEFAULT 0.00,
+  cash_tips NUMERIC(10, 2) DEFAULT 0.00,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+)
