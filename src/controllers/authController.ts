@@ -53,3 +53,46 @@ export const registerUser = async (
     }
   }
 };
+
+export const loginUser = async (
+  req: Request<{}, {}, { email: string; password: string }>,
+  res: Response,
+) => {
+  let { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ message: "Missing email or password" });
+  }
+
+  email = email.trim();
+  password = password.trim();
+
+  if (!validator.isEmail(email)) {
+    return res
+      .status(400)
+      .json({ message: "Please enter a valid email, (ex.. johndoe@aol.com" });
+  }
+
+  try {
+    const queryText = `SELECT * FROM users WHERE email = $1`;
+    const queryResult = await pool.query(queryText, [email]);
+    const user = queryResult.rows[0];
+
+    if (!user) {
+      return res.status(401).json({ message: "Invalid email or password" });
+    }
+    const isMatch = await bcrypt.compare(password, user.password_hash);
+
+    if (!isMatch) {
+      return res.status(401).json({ message: "Invalid email or password" });
+    }
+
+    return res.status(200).json({
+      message: "Login successful",
+      user: { id: user.id, email: user.email },
+    });
+  } catch (err) {
+    console.error("Login Error:", err);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
