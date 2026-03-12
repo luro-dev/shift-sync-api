@@ -3,7 +3,7 @@ import validator from "validator";
 import type { Request, Response } from "express";
 import { pool } from "../config/db";
 import jwt from "jsonwebtoken";
-import SafeUser from "../types/user";
+import { SafeUser, User } from "../types/user";
 export const registerUser = async (
   req: Request<{}, {}, { email: string; password: string }>,
   res: Response,
@@ -76,7 +76,7 @@ export const loginUser = async (
 
   try {
     const queryText = `SELECT * FROM users WHERE email = $1`;
-    const queryResult = await pool.query<SafeUser>(queryText, [email]);
+    const queryResult = await pool.query<User>(queryText, [email]);
     const user = queryResult.rows[0];
 
     if (!user) {

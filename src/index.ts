@@ -3,6 +3,8 @@ import type { Request, Response } from "express";
 import authRouter from "./routes/authRoutes";
 import dotenv from "dotenv";
 import morgan from "morgan";
+import { authenticateToken } from "./middleware/auth";
+import { AuthRequest } from "./types/authRequest";
 
 dotenv.config();
 const PORT = Number(process.env.PORT) || 8000;
