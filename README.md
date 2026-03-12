@@ -7,7 +7,7 @@
 - **Framework:** Express.js
 - **Language:** TypeScript
 - **Database:** PostgreSQL (Raw SQL with `pg`)
-- **Security:** Bcrypt & Express-Session
+- **Security:** Bcrypt & JWT Authentication
 - **Tooling:** Morgan (Logging), Dotenv (Config), Nodemon
 
 ## 🚀 Key Features
