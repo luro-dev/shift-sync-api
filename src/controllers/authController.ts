@@ -2,7 +2,8 @@ import bcrypt from "bcrypt";
 import validator from "validator";
 import type { Request, Response } from "express";
 import { pool } from "../config/db";
-
+import jwt from "jsonwebtoken";
+import SafeUser from "../types/user";
 export const registerUser = async (
   req: Request<{}, {}, { email: string; password: string }>,
   res: Response,
@@ -75,7 +76,7 @@ export const loginUser = async (
 
   try {
     const queryText = `SELECT * FROM users WHERE email = $1`;
-    const queryResult = await pool.query(queryText, [email]);
+    const queryResult = await pool.query<SafeUser>(queryText, [email]);
     const user = queryResult.rows[0];
 
     if (!user) {
@@ -87,8 +88,20 @@ export const loginUser = async (
       return res.status(401).json({ message: "Invalid email or password" });
     }
 
+    // Uses <Omit> to remove hashed_password
+    const payload: SafeUser = {
+      id: user.id,
+      email: user.email,
+      created_at: user.created_at,
+    };
+
+    const token = jwt.sign(payload, process.env.JWT_SECRET as string, {
+      expiresIn: "1h",
+    });
+
     return res.status(200).json({
       message: "Login successful",
+      token,
       user: { id: user.id, email: user.email },
     });
   } catch (err) {
