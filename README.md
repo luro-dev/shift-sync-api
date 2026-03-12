@@ -11,7 +11,7 @@
 - **Tooling:** Morgan (Logging), Dotenv (Config), Nodemon
 
 ## 🚀 Key Features
-- **Secure Authentication:** User registration and session-based login.
+- **Secure Authentication:** User registration and stateless token-based authentication.
 - **Shift Management:** Full CRUD operations for daily shifts (Hours, Cash/Card Tips, Hourly Wage).
 - **Income Analytics:** Custom SQL queries for weekly/monthly earnings trends and averages.
 - **Data Integrity:** Strict PostgreSQL schema with decimal precision for financial data.
