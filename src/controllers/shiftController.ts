@@ -1,6 +1,7 @@
 import { AuthRequest } from "../types/authRequest";
 import { Request, Response } from "express";
 import { pool } from "../config/db";
+import { Shift } from "../types/shift";
 
 export const createShift = async (req: Request, res: Response) => {
   const authRequest = req as AuthRequest;
@@ -49,6 +50,39 @@ export const createShift = async (req: Request, res: Response) => {
   }
 };
 
+export const getUserShifts = async (
+  req: Request,
+  res: Response<{ message: string; shifts?: Shift[] }>,
+) => {
+  const authReq = req as AuthRequest;
+
+  if (!authReq.user) {
+    return res.status(401).json({ message: "User not authenticated" });
+  }
+
+  const userId = authReq.user.id;
+
+  try {
+    const queryText = `
+      SELECT * FROM shifts 
+        WHERE user_id = $1
+      ORDER BY shift_date DESC
+    `;
+
+    const result = await pool.query<Shift>(queryText, [userId]);
+
+    const shifts = result.rows;
+
+    return res
+      .status(200)
+      .json({ message: "Successfully obtained user shifts", shifts });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Error retrieving shifts" });
+  }
+};
+
+export const updateUserShift = async () => {};
 /*
 
 CREATE TABLE IF NOT EXISTS shifts (

@@ -1,11 +1,18 @@
 import { Router } from "express";
 import { authenticateToken } from "../middleware/auth";
-import { createShift } from "../controllers/shiftController";
+import {
+  createShift,
+  getUserShifts,
+  updateUserShift,
+} from "../controllers/shiftController";
 
 export const shiftRouter = Router();
 
 // Protects all shiftRouter endpoints
 shiftRouter.use(authenticateToken);
-shiftRouter.post("/addShift", createShift);
+
+shiftRouter.get("/", getUserShifts);
+shiftRouter.post("/", createShift);
+shiftRouter.put("/:id", updateUserShift);
 
 export default shiftRouter;
