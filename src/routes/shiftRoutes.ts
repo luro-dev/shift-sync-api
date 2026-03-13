@@ -3,7 +3,7 @@ import { authenticateToken } from "../middleware/auth";
 import {
   createShift,
   getUserShifts,
-  updateUserShift,
+  updateShift,
 } from "../controllers/shiftController";
 
 export const shiftRouter = Router();
@@ -13,6 +13,6 @@ shiftRouter.use(authenticateToken);
 
 shiftRouter.get("/", getUserShifts);
 shiftRouter.post("/", createShift);
-shiftRouter.put("/:id", updateUserShift);
+shiftRouter.put("/:id", updateShift);
 
 export default shiftRouter;

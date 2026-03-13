@@ -4,7 +4,10 @@ import { pool } from "../config/db";
 import { Shift } from "../types/shift";
 
 export const createShift = async (req: Request, res: Response) => {
-  const authRequest = req as AuthRequest;
+  const authReq = req as AuthRequest;
+  if (!authReq.user) {
+    return res.status(401).json({ message: "User not authenticated" });
+  }
 
   const {
     shift_date,
@@ -14,7 +17,7 @@ export const createShift = async (req: Request, res: Response) => {
     credit_tips,
     cash_tips,
   } = req.body;
-  const userId = authRequest.user.id;
+  const userId = authReq.user.id;
 
   if (!shift_date || !shift_type || !hourly_pay || !hours_worked) {
     return res.status(400).json({ message: "Missing required shift details" });
@@ -28,7 +31,7 @@ export const createShift = async (req: Request, res: Response) => {
     `;
 
     const values = [
-      authRequest.user.id,
+      authReq.user.id,
       shift_date,
       shift_type,
       hourly_pay,
@@ -82,7 +85,64 @@ export const getUserShifts = async (
   }
 };
 
-export const updateUserShift = async () => {};
+export const updateShift = async (req: Request, res: Response) => {
+  const authReq = req as AuthRequest;
+  if (!authReq.user) {
+    return res.status(401).json({ message: "User not authenticated" });
+  }
+
+  const userId = authReq.user.id;
+  const { id } = req.params;
+  const {
+    shift_date,
+    shift_type,
+    hourly_pay,
+    hours_worked,
+    credit_tips,
+    cash_tips,
+  } = req.body;
+
+  try {
+    const queryText = `
+    UPDATE shifts 
+    SET 
+      shift_date = $1, 
+      shift_type = $2, 
+      hourly_pay = $3, 
+      hours_worked = $4, 
+      credit_tips = $5, 
+      cash_tips = $6
+    WHERE id = $7 AND user_id = $8
+    RETURNING *;
+  `;
+
+    const values = [
+      shift_date,
+      shift_type,
+      hourly_pay,
+      hours_worked,
+      credit_tips,
+      cash_tips,
+      id,
+      userId,
+    ];
+
+    const result = await pool.query(queryText, values);
+
+    if (result.rowCount === 0) {
+      return res
+        .status(404)
+        .json({ message: "Shift not found or unauthorized" });
+    }
+
+    const updatedShift: Shift = result.rows[0];
+
+    return res.status(200).json({
+      message: "Shift updated successfully",
+      updatedShift,
+    });
+  } catch (err) {}
+};
 /*
 
 CREATE TABLE IF NOT EXISTS shifts (
