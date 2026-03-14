@@ -168,17 +168,3 @@ export const deleteShift = async (req: Request, res: Response) => {
     return res.status(500).json({ message: "Error deleting shift" });
   }
 };
-/*
-
-CREATE TABLE IF NOT EXISTS shifts (
-  id SERIAL PRIMARY KEY,
-  user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-  shift_date DATE NOT NULL,
-  shift_type VARCHAR(20),
-  hourly_pay NUMERIC(10, 2) NOT NULL,
-  hours_wored NUMERIC(4, 2) NOT NULL,
-  credit_tips NUMERIC(10, 2) DEFAULT 0.00,
-  cash_tips NUMERIC(10, 2) DEFAULT 0.00,
-  created_at TIMESTAMPTZ DEFAULT NOW()
-)
-*/
