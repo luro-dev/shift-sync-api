@@ -143,17 +143,28 @@ export const updateShift = async (req: Request, res: Response) => {
     });
   } catch (err) {}
 };
-/*
 
-CREATE TABLE IF NOT EXISTS shifts (
-  id SERIAL PRIMARY KEY,
-  user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-  shift_date DATE NOT NULL,
-  shift_type VARCHAR(20),
-  hourly_pay NUMERIC(10, 2) NOT NULL,
-  hours_wored NUMERIC(4, 2) NOT NULL,
-  credit_tips NUMERIC(10, 2) DEFAULT 0.00,
-  cash_tips NUMERIC(10, 2) DEFAULT 0.00,
-  created_at TIMESTAMPTZ DEFAULT NOW()
-)
-*/
+export const deleteShift = async (req: Request, res: Response) => {
+  const authReq = req as AuthRequest;
+  const userId = authReq.user.id;
+  const { id } = req.params;
+
+  try {
+    const queryText = `
+      DELETE FROM shifts WHERE id = $1 and user_id = $2
+    `;
+
+    const result = await pool.query(queryText, [id, userId]);
+
+    if (result.rowCount === 0) {
+      return res
+        .status(404)
+        .json({ message: "Shift not found or unauthorized" });
+    }
+
+    return res.status(200).json({ message: "Shift deleted successfully" });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Error deleting shift" });
+  }
+};
